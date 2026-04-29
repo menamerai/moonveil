@@ -54,10 +54,10 @@ const recentPosts = allPosts
       <div class="paper-list">
         {
           [...papers]
-            .sort((a, b) => b.year - a.year)
+            .sort((a, b) => b.date.localeCompare(a.date))
             .map((paper) => (
               <a class="paper-item" href={paper.url} target="_blank" rel="noopener">
-                <span class="p-year">{paper.year}</span>
+                <span class="p-date">{paper.date}</span>
                 <span class="paper-title">{paper.title}</span>
                 <span class="p-num">{paper.num}</span>
               </a>
@@ -228,7 +228,7 @@ const recentPosts = allPosts
     color: var(--blue);
   }
 
-  .p-year {
+  .p-date {
     font-family: var(--f-mono);
     font-size: 10px;
     color: var(--cream-dim);

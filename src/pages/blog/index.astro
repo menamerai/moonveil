@@ -54,7 +54,7 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
             </div>
             <div class="post-title-row">
               <div class="post-title">{post.data.title}</div>
-              <span class="post-arrow">→</span>
+              <span class="post-arrow">READ →</span>
             </div>
             <div class="post-desc">{post.data.description}</div>
           </a>
@@ -192,6 +192,7 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
   }
   .post-item:hover .post-arrow {
     color: var(--orange);
+    border-color: var(--orange);
     transform: translateX(3px);
   }
 
@@ -237,9 +238,9 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
 
   .post-title-row {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 16px;
     margin-bottom: 10px;
   }
 
@@ -255,11 +256,16 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
 
   .post-arrow {
     font-family: var(--f-mono);
-    font-size: 14px;
+    font-size: 9px;
+    letter-spacing: 0.16em;
     color: var(--cream-dim);
+    border: 1px solid var(--border-mid);
+    padding: 5px 11px;
     flex-shrink: 0;
+    white-space: nowrap;
     transition:
       color 0.15s,
+      border-color 0.15s,
       transform 0.15s;
   }
 
