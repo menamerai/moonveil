@@ -52,9 +52,11 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
                 ))}
               </div>
             </div>
-            <div class="post-title">{post.data.title}</div>
+            <div class="post-title-row">
+              <div class="post-title">{post.data.title}</div>
+              <span class="post-arrow">→</span>
+            </div>
             <div class="post-desc">{post.data.description}</div>
-            <span class="read-more">READ TRANSMISSION →</span>
           </a>
         ))
       }
@@ -188,8 +190,8 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
   .post-item:hover .post-title {
     color: var(--orange);
   }
-  .post-item:hover .read-more {
-    opacity: 1;
+  .post-item:hover .post-arrow {
+    color: var(--orange);
     transform: translateX(3px);
   }
 
@@ -233,6 +235,14 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
     padding: 2px 7px;
   }
 
+  .post-title-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
   .post-title {
     font-family: var(--f-display);
     font-size: 26px;
@@ -240,8 +250,17 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
     letter-spacing: 0.01em;
     color: var(--cream);
     line-height: 1.2;
-    margin-bottom: 10px;
     transition: color 0.15s;
+  }
+
+  .post-arrow {
+    font-family: var(--f-mono);
+    font-size: 14px;
+    color: var(--cream-dim);
+    flex-shrink: 0;
+    transition:
+      color 0.15s,
+      transform 0.15s;
   }
 
   .post-desc {
@@ -250,21 +269,6 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
     font-style: italic;
     color: var(--cream-mid);
     line-height: 1.6;
-    margin-bottom: 14px;
-  }
-
-  .read-more {
-    font-family: var(--f-mono);
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--orange);
-    opacity: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition:
-      opacity 0.15s,
-      transform 0.15s;
   }
 
   @media (max-width: 620px) {
