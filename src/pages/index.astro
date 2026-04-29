@@ -74,7 +74,7 @@ const recentPosts = allPosts
       <div class="blog-list">
         {
           recentPosts.map((post) => (
-            <a class="blog-item" href={`${base}blog/${post.slug}`}>
+            <a class="blog-item" href={`${base}/blog/${post.slug}`}>
               <span class="b-date">{post.data.date.toISOString().slice(0, 10)}</span>
               <span class="b-title">{post.data.title}</span>
               <span class="b-arrow">→</span>
@@ -82,7 +82,7 @@ const recentPosts = allPosts
           ))
         }
       </div>
-      <a class="view-all" href={`${base}blog`}>VIEW ALL TRANSMISSIONS <span>→</span></a>
+      <a class="view-all" href={`${base}/blog`}>VIEW ALL TRANSMISSIONS <span>→</span></a>
     </section>
   </div>
 
@@ -215,9 +215,7 @@ const recentPosts = allPosts
     text-decoration: none;
     color: inherit;
     cursor: pointer;
-    transition:
-      background 0.15s,
-      padding 0.15s;
+    transition: background 0.15s;
   }
 
   .paper-item:first-child {
@@ -226,10 +224,6 @@ const recentPosts = allPosts
 
   .paper-item:hover {
     background: var(--blue-glow);
-    padding-left: 12px;
-    padding-right: 12px;
-    margin-left: -12px;
-    margin-right: -12px;
   }
 
   .paper-item:hover .paper-title {
@@ -274,9 +268,7 @@ const recentPosts = allPosts
     border-bottom: 1px solid var(--border);
     text-decoration: none;
     color: inherit;
-    transition:
-      background 0.15s,
-      padding 0.15s;
+    transition: background 0.15s;
   }
 
   .blog-item:first-child {
@@ -285,10 +277,6 @@ const recentPosts = allPosts
 
   .blog-item:hover {
     background: var(--orange-glow);
-    padding-left: 12px;
-    padding-right: 12px;
-    margin-left: -12px;
-    margin-right: -12px;
   }
 
   .blog-item:hover .b-title {

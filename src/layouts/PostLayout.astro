@@ -20,7 +20,7 @@ const transmissionLabel = transmission ? `TRANSMISSION // ${transmission}` : "TR
 <BaseLayout title={`${title} — Phan Anh Duong`} footerBordered={true}>
   <div class="wrap">
     <header class="post-header">
-      <a href={`${base}blog`} class="back-link">← TRANSMISSION LOG</a>
+      <a href={`${base}/blog`} class="back-link">← TRANSMISSION LOG</a>
 
       <MissionTag text={transmissionLabel} />
 
@@ -54,12 +54,12 @@ const transmissionLabel = transmission ? `TRANSMISSION // ${transmission}` : "TR
     <nav class="post-nav">
       {
         prevPost ? (
-          <a href={`${base}blog/${prevPost.slug}`}>← {prevPost.data.title}</a>
+          <a href={`${base}/blog/${prevPost.slug}`}>← {prevPost.data.title}</a>
         ) : (
-          <a href={`${base}blog`}>← ALL TRANSMISSIONS</a>
+          <a href={`${base}/blog`}>← ALL TRANSMISSIONS</a>
         )
       }
-      {nextPost ? <a href={`${base}blog/${nextPost.slug}`}>{nextPost.data.title} →</a> : <span />}
+      {nextPost ? <a href={`${base}/blog/${nextPost.slug}`}>{nextPost.data.title} →</a> : <span />}
     </nav>
   </div>
 </BaseLayout>
