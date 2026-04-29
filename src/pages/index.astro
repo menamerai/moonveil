@@ -53,13 +53,15 @@ const recentPosts = allPosts
       <SectionHead label="RESEARCH OUTPUT" num="01" />
       <div class="paper-list">
         {
-          papers.map((paper) => (
-            <a class="paper-item" href={paper.url} target="_blank" rel="noopener">
-              <span class="p-num">{paper.num}</span>
-              <span class="paper-title">{paper.title}</span>
-              <span class="paper-year">{paper.year}</span>
-            </a>
-          ))
+          [...papers]
+            .sort((a, b) => b.year - a.year)
+            .map((paper) => (
+              <a class="paper-item" href={paper.url} target="_blank" rel="noopener">
+                <span class="p-year">{paper.year}</span>
+                <span class="paper-title">{paper.title}</span>
+                <span class="p-num">{paper.num}</span>
+              </a>
+            ))
         }
       </div>
     </section>
@@ -203,8 +205,8 @@ const recentPosts = allPosts
 
   .paper-item {
     display: grid;
-    grid-template-columns: 38px 1fr 44px;
-    gap: 18px;
+    grid-template-columns: 108px 1fr 38px;
+    gap: 24px;
     align-items: baseline;
     padding: 17px 10px;
     border-bottom: 1px solid var(--border);
@@ -226,11 +228,11 @@ const recentPosts = allPosts
     color: var(--blue);
   }
 
-  .p-num {
+  .p-year {
     font-family: var(--f-mono);
-    font-size: 9px;
+    font-size: 10px;
     color: var(--cream-dim);
-    padding-top: 3px;
+    letter-spacing: 0.04em;
   }
 
   .paper-title {
@@ -242,7 +244,7 @@ const recentPosts = allPosts
     transition: color 0.15s;
   }
 
-  .paper-year {
+  .p-num {
     font-family: var(--f-mono);
     font-size: 9px;
     color: var(--cream-dim);
