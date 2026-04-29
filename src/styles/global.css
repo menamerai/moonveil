@@ -1,0 +1,60 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0d0b08;
+  --bg-card: #121009;
+  --bg-code: #0a0908;
+  --cream: #ddd3bc;
+  --cream-mid: #9a9080;
+  --cream-dim: #46423a;
+  --orange: #c75e26;
+  --orange-glow: rgba(199, 94, 38, 0.12);
+  --blue: #5aa3bc;
+  --blue-glow: rgba(90, 163, 188, 0.1);
+  --border: #1e1c16;
+  --border-mid: #2a2720;
+
+  --f-display: "Barlow Condensed", sans-serif;
+  --f-mono: "Space Mono", monospace;
+  --f-body: "Crimson Pro", serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* Subtle scan-line film grain */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.025) 3px,
+    rgba(0, 0, 0, 0.025) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

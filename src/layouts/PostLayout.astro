@@ -1,0 +1,337 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import MissionTag from "../components/MissionTag.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  prevPost?: CollectionEntry<"blog"> | null;
+  nextPost?: CollectionEntry<"blog"> | null;
+}
+
+const { post, prevPost = null, nextPost = null } = Astro.props;
+const { title, date, author, tags, transmission } = post.data;
+const base = import.meta.env.BASE_URL;
+
+const formattedDate = date.toISOString().slice(0, 10);
+const transmissionLabel = transmission ? `TRANSMISSION // ${transmission}` : "TRANSMISSION";
+---
+
+<BaseLayout title={`${title} — Phan Anh Duong`} footerBordered={true}>
+  <div class="wrap">
+    <header class="post-header">
+      <a href={`${base}blog`} class="back-link">← TRANSMISSION LOG</a>
+
+      <MissionTag text={transmissionLabel} />
+
+      <h1 class="post-title">{title}</h1>
+
+      <div class="post-meta">
+        <div class="meta-item">
+          <span class="meta-k">DATE</span>
+          <span class="meta-v">{formattedDate}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-k">AUTHOR</span>
+          <span class="meta-v">{author}</span>
+        </div>
+      </div>
+      {
+        tags.length > 0 && (
+          <div class="meta-tags">
+            {tags.map((tag) => (
+              <span class="m-tag">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <article class="prose">
+      <slot />
+    </article>
+
+    <nav class="post-nav">
+      {
+        prevPost ? (
+          <a href={`${base}blog/${prevPost.slug}`}>← {prevPost.data.title}</a>
+        ) : (
+          <a href={`${base}blog`}>← ALL TRANSMISSIONS</a>
+        )
+      }
+      {nextPost ? <a href={`${base}blog/${nextPost.slug}`}>{nextPost.data.title} →</a> : <span />}
+    </nav>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  /* Prose styles reach into rendered markdown — must be global */
+  .prose {
+    padding: 56px 0 72px;
+  }
+
+  .prose p {
+    margin-bottom: 1.5em;
+    color: var(--cream);
+    font-size: 18px;
+    line-height: 1.8;
+  }
+
+  .prose h1 {
+    font-family: var(--f-display);
+    font-size: 38px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--cream);
+    margin: 2.2em 0 0.6em;
+    line-height: 1;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-mid);
+  }
+
+  .prose h2 {
+    font-family: var(--f-display);
+    font-size: 28px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--cream);
+    margin: 2em 0 0.5em;
+    line-height: 1.1;
+    position: relative;
+    padding-left: 16px;
+  }
+
+  .prose h2::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: var(--orange);
+  }
+
+  .prose h3 {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-mid);
+    margin: 1.8em 0 0.5em;
+  }
+
+  .prose pre {
+    background: var(--bg-code);
+    border: 1px solid var(--border-mid);
+    padding: 24px 28px;
+    margin: 2em 0;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  /* Language label from shiki's data-language attribute */
+  .prose pre::before {
+    content: attr(data-language);
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-family: var(--f-mono);
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    color: var(--orange);
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border-mid);
+    border-left: 1px solid var(--border-mid);
+  }
+
+  /* Corner tick mark */
+  .prose pre::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    border-bottom: 1px solid var(--orange);
+    border-right: 1px solid var(--orange);
+    opacity: 0.5;
+  }
+
+  .prose pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .prose code {
+    font-family: var(--f-mono);
+    font-size: 13px;
+    color: var(--blue);
+    line-height: 1.7;
+  }
+
+  .prose p code,
+  .prose li code {
+    background: var(--bg-code);
+    border: 1px solid var(--border-mid);
+    padding: 1px 6px;
+    font-size: 13px;
+  }
+
+  .prose a {
+    color: var(--orange);
+    border-bottom: 1px solid rgba(199, 94, 38, 0.3);
+    transition: border-color 0.2s;
+  }
+  .prose a:hover {
+    border-color: var(--orange);
+  }
+
+  .prose blockquote {
+    border-left: 2px solid var(--orange);
+    padding-left: 24px;
+    margin: 1.8em 0;
+    font-style: italic;
+    color: var(--cream-mid);
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 24px;
+    margin-bottom: 1.5em;
+  }
+  .prose li {
+    margin-bottom: 0.4em;
+  }
+
+  .prose hr {
+    border: none;
+    border-top: 1px solid var(--border-mid);
+    margin: 2.5em 0;
+  }
+</style>
+
+<style>
+  .wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 52px;
+  }
+
+  .post-header {
+    padding: 72px 0 52px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .post-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, var(--cream-dim) 1px, transparent 1px);
+    background-size: 26px 26px;
+    opacity: 0.11;
+    pointer-events: none;
+  }
+
+  .back-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--f-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--cream-dim);
+    margin-bottom: 36px;
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: var(--orange);
+  }
+
+  h1.post-title {
+    position: relative;
+    font-family: var(--f-display);
+    font-size: clamp(36px, 6vw, 62px);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 0.95;
+    color: var(--cream);
+    letter-spacing: -0.01em;
+    margin-bottom: 28px;
+  }
+
+  .post-meta {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .meta-k {
+    font-family: var(--f-mono);
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    color: var(--cream-dim);
+  }
+  .meta-v {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    color: var(--cream);
+  }
+
+  .meta-tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .m-tag {
+    font-family: var(--f-mono);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: var(--blue);
+    border: 1px solid rgba(90, 163, 188, 0.3);
+    padding: 3px 8px;
+  }
+
+  .post-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 0 64px;
+    border-top: 1px solid var(--border);
+  }
+
+  .post-nav a {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--cream-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+  }
+  .post-nav a:hover {
+    color: var(--orange);
+  }
+
+  @media (max-width: 620px) {
+    .wrap {
+      padding: 0 24px;
+    }
+  }
+</style>

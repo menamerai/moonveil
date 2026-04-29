@@ -1,0 +1,35 @@
+---
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+---
+
+<div class="mission-tag">
+  <span class="mission-tag-text">{text}</span>
+  <span class="mission-tag-line"></span>
+</div>
+
+<style>
+  .mission-tag {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .mission-tag-text {
+    font-family: var(--f-mono);
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: var(--orange);
+    white-space: nowrap;
+  }
+
+  .mission-tag-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--orange), transparent);
+    opacity: 0.4;
+  }
+</style>
