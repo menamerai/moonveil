@@ -40,7 +40,7 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
         posts.map((post) => (
           <a
             class="post-item"
-            href={`${base}blog/${post.slug}`}
+            href={`${base}/blog/${post.slug}`}
             data-tags={post.data.tags.map((t) => t.toLowerCase()).join(" ")}
           >
             <div class="post-meta-row">
@@ -178,17 +178,11 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
     border-bottom: 1px solid var(--border);
     text-decoration: none;
     color: inherit;
-    transition:
-      background 0.15s,
-      padding 0.15s;
+    transition: background 0.15s;
   }
 
   .post-item:hover {
     background: var(--orange-glow);
-    padding-left: 14px;
-    padding-right: 14px;
-    margin-left: -14px;
-    margin-right: -14px;
   }
 
   .post-item:hover .post-title {
