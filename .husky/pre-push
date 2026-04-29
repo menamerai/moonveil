@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+# Ensure node is available in Git's shell environment on Windows
+export PATH="/c/Program Files/nodejs:$PATH"
+
 PRETTIER="./node_modules/.bin/prettier"
 
 if ! "$PRETTIER" --check . --log-level warn; then
