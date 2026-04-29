@@ -1,7 +1,9 @@
 #!/usr/bin/env sh
 
-if ! yarn prettier --check . --log-level warn; then
-  yarn prettier --write . --log-level warn
+PRETTIER="./node_modules/.bin/prettier"
+
+if ! "$PRETTIER" --check . --log-level warn; then
+  "$PRETTIER" --write . --log-level warn
   echo ""
   echo "Files were reformatted by Prettier. Please commit the changes and push again."
   exit 1
