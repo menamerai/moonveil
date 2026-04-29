@@ -1,0 +1,65 @@
+---
+const base = import.meta.env.BASE_URL;
+---
+
+<nav>
+  <a href={base} class="nav-id">PAD // PHAN ANH DUONG</a>
+  <div class="nav-links">
+    <a href="https://github.com/menamerai" target="_blank" rel="noopener">GITHUB</a>
+    <a href="https://www.linkedin.com/in/phananhduong/" target="_blank" rel="noopener">LINKEDIN</a>
+    <a
+      href="https://scholar.google.com/citations?user=LSGBjPoAAAAJ&hl=en"
+      target="_blank"
+      rel="noopener">SCHOLAR</a
+    >
+  </div>
+</nav>
+
+<style>
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 52px;
+    background: rgba(13, 11, 8, 0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-id {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--cream-mid);
+    transition: color 0.2s;
+  }
+  .nav-id:hover {
+    color: var(--cream);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-links a {
+    font-family: var(--f-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--cream-dim);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover {
+    color: var(--orange);
+  }
+
+  @media (max-width: 620px) {
+    nav {
+      padding: 18px 24px;
+    }
+  }
+</style>
