@@ -1,0 +1,277 @@
+---
+
+---
+
+<div class="orbital-section">
+  <span class="orbital-label">DEEP SPACE TELEMETRY // SYSTEM NOMINAL</span>
+  <canvas id="orbital" width="520" height="520"></canvas>
+</div>
+
+<style>
+  .orbital-section {
+    padding: 72px 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  .orbital-label {
+    font-family: var(--f-mono);
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: var(--cream-dim);
+  }
+
+  #orbital {
+    display: block;
+    opacity: 0.9;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById("orbital") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d")!;
+  const W = 520,
+    H = 520;
+  const cx = W / 2,
+    cy = H / 2;
+  const R = 240;
+
+  // Seeded random for consistent star field
+  let _s = 137;
+  function rand(): number {
+    _s = (_s * 1664525 + 1013904223) & 0xffffffff;
+    return (_s >>> 0) / 4294967295;
+  }
+
+  interface Star {
+    x: number;
+    y: number;
+    s: number;
+    o: number;
+  }
+
+  interface Orbit {
+    a: number;
+    b: number;
+    tilt: number;
+    speed: number;
+    phase: number;
+    name: string;
+    col: [number, number, number];
+  }
+
+  interface Point {
+    x: number;
+    y: number;
+  }
+
+  const stars: Star[] = [];
+  for (let i = 0; i < 70; i++) {
+    const a = rand() * Math.PI * 2;
+    const r = Math.sqrt(rand()) * (R - 8);
+    stars.push({
+      x: Math.cos(a) * r,
+      y: Math.sin(a) * r,
+      s: rand() * 1.3 + 0.3,
+      o: rand() * 0.45 + 0.15,
+    });
+  }
+
+  const orbits: Orbit[] = [
+    { a: 88, b: 50, tilt: -0.48, speed: 0.00058, phase: 0.0, name: "SAT-I", col: [90, 163, 188] },
+    {
+      a: 148,
+      b: 84,
+      tilt: 0.38,
+      speed: 0.00036,
+      phase: 2.3,
+      name: "PROBE-II",
+      col: [199, 94, 38],
+    },
+    {
+      a: 58,
+      b: 46,
+      tilt: 1.15,
+      speed: 0.00093,
+      phase: 4.7,
+      name: "BEACON",
+      col: [154, 144, 128],
+    },
+  ];
+
+  const trails: Point[][] = orbits.map(() => []);
+  const TRAIL_LEN = 38;
+  let t = 0;
+
+  function getPos(o: Orbit, time: number): Point {
+    const ang = time * o.speed + o.phase;
+    const lx = o.a * Math.cos(ang);
+    const ly = o.b * Math.sin(ang);
+    return {
+      x: cx + lx * Math.cos(o.tilt) - ly * Math.sin(o.tilt),
+      y: cy + lx * Math.sin(o.tilt) + ly * Math.cos(o.tilt),
+    };
+  }
+
+  function draw(): void {
+    ctx.clearRect(0, 0, W, H);
+
+    // Clip to outer ring
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.clip();
+
+    // Background
+    ctx.fillStyle = "#0a0907";
+    ctx.fillRect(0, 0, W, H);
+
+    // Dot grid
+    ctx.fillStyle = "rgba(70,66,58,0.22)";
+    for (let gx = 10; gx < W; gx += 22) {
+      for (let gy = 10; gy < H; gy += 22) {
+        ctx.beginPath();
+        ctx.arc(gx, gy, 0.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Concentric range rings
+    [60, 110, 165, 210].forEach((r, i) => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(46,42,32,${i === 3 ? 0.7 : 0.35})`;
+      ctx.lineWidth = 0.6;
+      ctx.stroke();
+    });
+
+    // Stars
+    stars.forEach((st) => {
+      ctx.beginPath();
+      ctx.arc(cx + st.x, cy + st.y, st.s, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(221,211,188,${st.o})`;
+      ctx.fill();
+    });
+
+    // Orbit ellipses
+    orbits.forEach((o) => {
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(o.tilt);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, o.a, o.b, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(221,211,188,0.09)";
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // Trails and satellites
+    orbits.forEach((o, i) => {
+      const pos = getPos(o, t);
+      trails[i].push({ ...pos });
+      if (trails[i].length > TRAIL_LEN) trails[i].shift();
+
+      trails[i].forEach((p, j) => {
+        const frac = j / TRAIL_LEN;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.2 * frac, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${o.col[0]},${o.col[1]},${o.col[2]},${frac * 0.55})`;
+        ctx.fill();
+      });
+
+      // Satellite dot
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${o.col[0]},${o.col[1]},${o.col[2]},0.95)`;
+      ctx.fill();
+
+      // Glow
+      const grd = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, 9);
+      grd.addColorStop(0, `rgba(${o.col[0]},${o.col[1]},${o.col[2]},0.25)`);
+      grd.addColorStop(1, "transparent");
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, 9, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
+      ctx.fill();
+
+      // Label offset radially from center
+      const dx = pos.x - cx,
+        dy = pos.y - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      ctx.font = "8px 'Space Mono', monospace";
+      ctx.fillStyle = `rgba(${o.col[0]},${o.col[1]},${o.col[2]},0.7)`;
+      ctx.fillText(o.name, pos.x + (dx / dist) * 14, pos.y + (dy / dist) * 14);
+    });
+
+    // Central crosshair
+    ctx.strokeStyle = "rgba(199,94,38,0.55)";
+    ctx.lineWidth = 0.8;
+    [-10, 10].forEach((d) => {
+      ctx.beginPath();
+      ctx.moveTo(cx + d * 0.8, cy);
+      ctx.lineTo(cx + d, cy);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + d * 0.8);
+      ctx.lineTo(cx, cy + d);
+      ctx.stroke();
+    });
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(199,94,38,0.7)";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(199,94,38,0.9)";
+    ctx.fill();
+
+    ctx.restore(); // end clip
+
+    // Outer ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, R, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(46,42,32,1)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Tick marks
+    for (let deg = 0; deg < 360; deg += 10) {
+      const rad = (deg * Math.PI) / 180;
+      const major = deg % 90 === 0;
+      const medium = deg % 30 === 0;
+      const len = major ? 10 : medium ? 6 : 3;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(rad) * (R - len), cy + Math.sin(rad) * (R - len));
+      ctx.lineTo(cx + Math.cos(rad) * R, cy + Math.sin(rad) * R);
+      ctx.strokeStyle = major
+        ? "rgba(199,94,38,0.5)"
+        : medium
+          ? "rgba(70,66,58,0.8)"
+          : "rgba(46,42,32,0.9)";
+      ctx.lineWidth = major ? 1.2 : 0.7;
+      ctx.stroke();
+    }
+
+    // Cardinal labels
+    const cardinals: [string, number, number][] = [
+      ["N", 0, -R - 14],
+      ["E", R + 14, 4],
+      ["S", 0, R + 18],
+      ["W", -R - 18, 4],
+    ];
+    ctx.font = "8px 'Space Mono', monospace";
+    ctx.fillStyle = "rgba(70,66,58,0.7)";
+    ctx.textAlign = "center";
+    cardinals.forEach(([l, dx, dy]) => ctx.fillText(l, cx + dx, cy + dy));
+    ctx.textAlign = "left";
+
+    t++;
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+</script>
