@@ -55,6 +55,7 @@
 <script>
   import * as THREE from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+  import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
   const canvas = document.getElementById("voyager-canvas") as HTMLCanvasElement;
@@ -103,9 +104,14 @@
     }, 2500);
   });
 
-  const loader = new GLTFLoader();
   // Strip trailing slash from BASE_URL before appending path
   const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+  const draco = new DRACOLoader();
+  draco.setDecoderPath(`${base}/draco/`);
+
+  const loader = new GLTFLoader();
+  loader.setDRACOLoader(draco);
 
   loader.load(
     `${base}/models/voyager.glb`,
