@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import MissionTag from "../components/MissionTag.astro";
 import SectionHead from "../components/SectionHead.astro";
 import OrbitalCanvas from "../components/OrbitalCanvas.astro";
+import VoyagerViewer from "../components/VoyagerViewer.astro";
 import { papers } from "../data/papers";
 import { getCollection } from "astro:content";
 
@@ -18,33 +19,39 @@ const recentPosts = allPosts
   <div class="wrap">
     <!-- HERO -->
     <section class="hero">
-      <MissionTag text="PERSONNEL FILE // 001-PAD" />
+      <div class="hero-text">
+        <MissionTag text="PERSONNEL FILE // 001-PAD" />
 
-      <h1 class="name">
-        Phan Anh<br />Duong
-      </h1>
+        <h1 class="name">
+          Phan Anh<br />Duong
+        </h1>
 
-      <p class="tagline">
-        I do AI safety stuff sometimes.<span class="cursor-block"></span>
-      </p>
+        <p class="tagline">
+          I do AI safety stuff sometimes.<span class="cursor-block"></span>
+        </p>
 
-      <div class="hero-meta">
-        <div class="meta-field">
-          <span class="meta-key">CALLSIGN</span>
-          <span class="meta-val">RAI</span>
+        <div class="hero-meta">
+          <div class="meta-field">
+            <span class="meta-key">CALLSIGN</span>
+            <span class="meta-val">RAI</span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-key">STATUS</span>
+            <span class="meta-val status">ACTIVE</span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-key">ROLE</span>
+            <span class="meta-val">SOLUTIONS ARCHITECT</span>
+          </div>
+          <div class="meta-field">
+            <span class="meta-key">DOMAIN</span>
+            <span class="meta-val">AI SAFETY</span>
+          </div>
         </div>
-        <div class="meta-field">
-          <span class="meta-key">STATUS</span>
-          <span class="meta-val status">ACTIVE</span>
-        </div>
-        <div class="meta-field">
-          <span class="meta-key">ROLE</span>
-          <span class="meta-val">SOLUTIONS ARCHITECT</span>
-        </div>
-        <div class="meta-field">
-          <span class="meta-key">DOMAIN</span>
-          <span class="meta-val">AI SAFETY</span>
-        </div>
+      </div>
+
+      <div class="hero-model">
+        <VoyagerViewer />
       </div>
     </section>
 
@@ -98,9 +105,22 @@ const recentPosts = allPosts
   /* ── HERO ── */
   .hero {
     position: relative;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 48px;
+    align-items: center;
     padding: 88px 0 72px;
     border-bottom: 1px solid var(--border);
     overflow: hidden;
+  }
+
+  .hero-text {
+    position: relative;
+  }
+
+  .hero-model {
+    position: relative;
+    height: 320px;
   }
 
   .hero::before {
@@ -336,7 +356,11 @@ const recentPosts = allPosts
       padding: 0 24px;
     }
     .hero {
+      grid-template-columns: 1fr;
       padding: 64px 0 52px;
+    }
+    .hero-model {
+      height: 240px;
     }
     .blog-item {
       grid-template-columns: 90px 1fr 18px;

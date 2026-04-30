@@ -12,7 +12,8 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "astro": "^4.16.0"
+    "astro": "^4.16.0",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "husky": "^9.1.0",
