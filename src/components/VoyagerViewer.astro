@@ -1,0 +1,170 @@
+---
+
+---
+
+<div class="viewer-wrap">
+  <div class="viewer-label">
+    <span class="viewer-label-text">VOYAGER PROBE // MODEL A</span>
+    <span class="viewer-label-line"></span>
+  </div>
+  <div id="voyager-container" class="viewer-container">
+    <canvas id="voyager-canvas"></canvas>
+  </div>
+  <span class="viewer-hint">DRAG TO ROTATE</span>
+</div>
+
+<style>
+  .viewer-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .viewer-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+  }
+
+  .viewer-label-text {
+    font-family: var(--f-mono);
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: var(--orange);
+    white-space: nowrap;
+  }
+
+  .viewer-label-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--orange), transparent);
+    opacity: 0.4;
+  }
+
+  .viewer-container {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid rgba(199, 94, 38, 0.4);
+    box-shadow: 0 0 32px rgba(199, 94, 38, 0.07);
+    position: relative;
+  }
+
+  #voyager-canvas {
+    display: block;
+    cursor: grab;
+  }
+
+  #voyager-canvas:active {
+    cursor: grabbing;
+  }
+
+  .viewer-hint {
+    font-family: var(--f-mono);
+    font-size: 7px;
+    letter-spacing: 0.22em;
+    color: var(--cream-dim);
+    opacity: 0.5;
+    align-self: center;
+  }
+</style>
+
+<script>
+  import * as THREE from "three";
+  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+  import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+  import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+  const canvas = document.getElementById("voyager-canvas") as HTMLCanvasElement;
+  const container = document.getElementById("voyager-container") as HTMLElement;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+  const scene = new THREE.Scene();
+
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 1000);
+  camera.position.set(0, 0.5, 4);
+
+  scene.add(new THREE.AmbientLight(0xddd3bc, 0.5));
+
+  const key = new THREE.DirectionalLight(0x8ec8de, 3.5);
+  key.position.set(-2, 2, 3);
+  scene.add(key);
+
+  const rim = new THREE.DirectionalLight(0xc75e26, 1.8);
+  rim.position.set(3, -1, -2);
+  scene.add(rim);
+
+  const fill = new THREE.DirectionalLight(0xddd3bc, 0.4);
+  fill.position.set(0, -3, 1);
+  scene.add(fill);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 1.2;
+  controls.enablePan = false;
+  controls.minDistance = 1.5;
+  controls.maxDistance = 10;
+
+  let rotateTimer: ReturnType<typeof setTimeout>;
+  controls.addEventListener("start", () => {
+    controls.autoRotate = false;
+    clearTimeout(rotateTimer);
+  });
+  controls.addEventListener("end", () => {
+    rotateTimer = setTimeout(() => {
+      controls.autoRotate = true;
+    }, 2500);
+  });
+
+  // Strip trailing slash from BASE_URL before appending path
+  const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+  const draco = new DRACOLoader();
+  draco.setDecoderPath(`${base}/draco/`);
+
+  const loader = new GLTFLoader();
+  loader.setDRACOLoader(draco);
+
+  loader.load(
+    `${base}/models/voyager.glb`,
+    (gltf) => {
+      const model = gltf.scene;
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      model.position.sub(center);
+      model.scale.setScalar(1.7 / Math.max(size.x, size.y, size.z));
+      scene.add(model);
+    },
+    undefined,
+    (err) => console.error("[VoyagerViewer] Failed to load GLB:", err)
+  );
+
+  function resize() {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    if (w === 0 || h === 0) return;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+
+  // Use ResizeObserver so we catch the first layout paint reliably
+  new ResizeObserver(resize).observe(container);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+</script>

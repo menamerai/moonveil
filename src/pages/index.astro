@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import MissionTag from "../components/MissionTag.astro";
 import SectionHead from "../components/SectionHead.astro";
 import OrbitalCanvas from "../components/OrbitalCanvas.astro";
+import VoyagerViewer from "../components/VoyagerViewer.astro";
 import { papers } from "../data/papers";
 import { getCollection } from "astro:content";
 
@@ -18,15 +19,17 @@ const recentPosts = allPosts
   <div class="wrap">
     <!-- HERO -->
     <section class="hero">
-      <MissionTag text="PERSONNEL FILE // 001-PAD" />
+      <div class="hero-name">
+        <MissionTag text="PERSONNEL FILE // 001-PAD" />
+        <h1 class="name">Phan Anh<br />Duong</h1>
+        <p class="tagline">
+          I do AI safety stuff sometimes.<span class="cursor-block"></span>
+        </p>
+      </div>
 
-      <h1 class="name">
-        Phan Anh<br />Duong
-      </h1>
-
-      <p class="tagline">
-        I do AI safety stuff sometimes.<span class="cursor-block"></span>
-      </p>
+      <div class="hero-model">
+        <VoyagerViewer />
+      </div>
 
       <div class="hero-meta">
         <div class="meta-field">
@@ -98,9 +101,33 @@ const recentPosts = allPosts
   /* ── HERO ── */
   .hero {
     position: relative;
+    display: grid;
+    grid-template-columns: 1fr 210px;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "name model"
+      "meta meta";
+    column-gap: 36px;
+    row-gap: 44px;
+    align-items: start;
     padding: 88px 0 72px;
     border-bottom: 1px solid var(--border);
     overflow: hidden;
+  }
+
+  .hero-name {
+    grid-area: name;
+    position: relative;
+  }
+
+  .hero-model {
+    grid-area: model;
+    position: relative;
+  }
+
+  .hero-meta {
+    grid-area: meta;
+    position: relative;
   }
 
   .hero::before {
@@ -116,13 +143,14 @@ const recentPosts = allPosts
   h1.name {
     position: relative;
     font-family: var(--f-display);
-    font-size: clamp(58px, 9vw, 96px);
+    font-size: clamp(46px, 7vw, 78px);
     font-weight: 700;
     line-height: 0.92;
     letter-spacing: -0.01em;
     text-transform: uppercase;
+    white-space: nowrap;
     color: var(--cream);
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
 
   .tagline {
@@ -130,9 +158,8 @@ const recentPosts = allPosts
     font-family: var(--f-body);
     font-style: italic;
     font-weight: 300;
-    font-size: 21px;
+    font-size: 18px;
     color: var(--cream-mid);
-    margin-bottom: 52px;
     line-height: 1.4;
   }
 
@@ -158,7 +185,6 @@ const recentPosts = allPosts
   }
 
   .hero-meta {
-    position: relative;
     display: flex;
     flex-wrap: wrap;
     gap: 36px;
@@ -336,7 +362,20 @@ const recentPosts = allPosts
       padding: 0 24px;
     }
     .hero {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "name"
+        "meta"
+        "model";
       padding: 64px 0 52px;
+    }
+    h1.name {
+      white-space: normal;
+      font-size: clamp(72px, 20vw, 110px);
+    }
+    .hero-model {
+      width: 60vw;
+      margin: 0 auto;
     }
     .blog-item {
       grid-template-columns: 90px 1fr 18px;
